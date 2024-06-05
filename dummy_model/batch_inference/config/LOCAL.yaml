@@ -1,11 +1,3 @@
-paths:
-    # data paths
-    raw_data_path:              '/root/github/dummy-model/dummy_model/batch_inference/data/raw_data/'
-    preprocessed_data_path:     '/root/github/dummy-model/dummy_model/batch_inference/data/preprocessed_data/'
-    inferenced_data_path:       '/root/github/dummy-model/dummy_model/batch_inference/data/inferenced_data/'
-    postprocessed_data_path:    '/root/github/dummy-model/dummy_model/batch_inference/data/postprocessed_data/'
-    model_quality_data_path:    '/root/github/dummy-model/dummy_model/batch_inference/data/model_quality_data/'
-    # artifacts paths
-    artifacts_path:             '/root/github/dummy-model/dummy_model/batch_inference/artifacts/'
-    # paths in batch_inference folder
-    sql_files_path:             '/root/github/dummy-model/dummy_model/batch_inference/sql_files/'
+defaults:
+    environment: local
+    vars: default

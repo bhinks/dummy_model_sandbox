@@ -21,3 +21,10 @@ test_training_locally:
 															train_model \
 															log_model_artifacts \
 															evaluate_model
+
+test_inference_locally:
+	python dummy_model/batch_inference/typer_functions_inference.py load_input \
+															preprocess_data \
+															run_inference \
+															postprocess_data \
+															push_output

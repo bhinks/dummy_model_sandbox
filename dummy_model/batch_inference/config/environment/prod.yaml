@@ -1,0 +1,10 @@
+data_paths:
+    raw_data_path:              '/opt/ml/processing/dummy-model/data/raw_data/'
+    preprocessed_data_path:     '/opt/ml/processing/dummy-model/data/preprocessed_data/'
+    inferenced_data_path:       '/opt/ml/processing/dummy-model/data/inferenced_data/'
+    postprocessed_data_path:    '/opt/ml/processing/dummy-model/data/postprocessed_data/'
+    model_quality_data_path:    '/opt/ml/processing/dummy-model/data/model_quality_data/'
+artifacts_paths:
+    base_path:                   '/opt/ml/processing/dummy-model/artifacts/'
+    scaler_path:                 '/opt/ml/processing/dummy-model/artifacts/preprocessing/'
+    model_path:                  '/opt/ml/processing/dummy-model/artifacts/models/'

@@ -126,7 +126,7 @@ def preprocess_fit() -> None:
 @app.command("log_preprocessing_artifacts")
 @mlflow_run
 def log_preprocessing_artifacts() -> None:
-    # Log Scaler to MLFlow
+    # Log Pre-Processing Artifacts to MLFlow
     mlflow.log_artifact(
         local_path=cfg.environment.artifacts_paths.scaler_path + 'standard_scaler.pkl',
         artifact_path=cfg.environment.artifact_paths.scaler_path.split(cfg.environment.artifact_paths.base_path)[-1]
@@ -168,7 +168,7 @@ def train_model() -> None:
     train_data_df = pd.read_parquet(cfg.environment.data_paths.preprocessed_data_path + 'preprocessed_train_data.parquet')
 
     # Train the Model
-    params = dict(cfg.model.ridge)
+    params = dict(cfg.model)
 
     model = getattr(sklearn, cfg.model.sklearn_class(**params))
     
@@ -188,11 +188,14 @@ def train_model() -> None:
         registered_model_name=f'dummy_registered_model__{datetime.now().strftime("%Y%m%d_%H%M%S")}',
     )
 
+    # Log Model Params in MLFlow
+    mlflow.log_params(params)
+
 
 @app.command("log_model_artifacts")
 @mlflow_run
 def log_model_artifacts() -> None:
-    # Log Model to MLFlow
+    # Log Model Artifacts to MLFlow
     mlflow.log_artifact(
         local_path=cfg.environment.artifacts_paths.model_path + 'ridge_regressor.pkl',
         artifact_path=cfg.environment.artifact_paths.model_path.split(cfg.environment.artifact_paths.base_path)[-1]
