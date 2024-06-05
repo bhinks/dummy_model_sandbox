@@ -1,7 +1,6 @@
 data_paths:
     raw_data_path:               'dummy_model/training/data/raw_data/'
     preprocessed_data_path:      'dummy_model/training/data/preprocessed_data/'
-    inferenced_data_path:        'dummy_model/training/data/inferenced_data/'
 
 artifact_paths:
     base_path:                   'dummy_model/training/artifacts/'
