@@ -1,0 +1,3 @@
+# This file tells `pyenv` which `local` Python installation to use
+# This Python installation should have `cookiecutter` and `poetry`
+3.10.6

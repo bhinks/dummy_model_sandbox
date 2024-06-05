@@ -1,0 +1,49 @@
+name: Trigger `build-and-test` workflow in `batch-inference-processing-containers`
+
+on: 
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - 'main'
+
+jobs:
+  dispatch-build-and-test:
+    runs-on:
+      group: eks-runners
+      labels: [self-hosted, Linux]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Dispatch build-and-test workflow trigger and get the run ID
+      id: dispatch
+      uses: Codex-/return-dispatch@v1.12.0
+      with:
+        ref: main
+        token: ${{ secrets.DISPATCH_TOKEN }}
+        repo: batch-inference-processing-containers
+        owner: DTS-GDA-BI-Platform
+        workflow: build-and-test.yml
+        workflow_inputs: |
+          { 
+            "image": "dummy-model",
+            "hash": "${{ github.event.pull_request.head.sha }}",
+            "code_branch": "${{ github.head_ref }}"
+          }
+
+    - name: Await `build_and_test` workflow (run ID ${{ steps.dispatch.outputs.run_id }})
+      id: await
+      uses: Codex-/await-remote-run@v1.11.0
+      with:
+        token: ${{ secrets.DISPATCH_TOKEN }}
+        repo: batch-inference-processing-containers
+        owner: DTS-GDA-BI-Platform
+        run_id: ${{ steps.dispatch.outputs.run_id }}
+        run_timeout_seconds: 1200
+        poll_interval_ms: 5000
