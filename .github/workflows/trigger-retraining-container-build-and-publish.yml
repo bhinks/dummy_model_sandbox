@@ -1,0 +1,53 @@
+name: Trigger `build-and-publish` workflow for retraining pipeline container in `batch-inference-processing-containers`
+
+on: 
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'main'
+
+jobs:
+  dispatch-build-and-publish:
+    if: github.event.pull_request.merged == true
+    runs-on:
+      group: eks-runners
+      labels: [self-hosted, Linux]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+  
+    - name: Get Git Hash
+      id: get_git_hash
+      run: |
+        echo "git_hash=$(echo $GITHUB_SHA)" >> $GITHUB_OUTPUT
+
+    - name: Dispatch build-and-test workflow trigger and get the run ID
+      id: dispatch
+      uses: Codex-/return-dispatch@v1.12.0
+      with:
+        ref: main
+        token: ${{ secrets.DISPATCH_TOKEN }}
+        repo: batch-inference-processing-containers
+        owner: DTS-GDA-BI-Platform
+        workflow: build-and-publish.yml
+        workflow_inputs: |
+          { 
+            "image": "dummy-model-retraining",
+            "hash": "${{ steps.get_git_hash.outputs.git_hash }}",  
+            "code_branch": "${{ github.base_ref }}"
+          }
+
+    - name: Await `build_and_test` workflow (run ID ${{ steps.dispatch.outputs.run_id }})
+      id: await
+      uses: Codex-/await-remote-run@v1.11.0
+      with:
+        token: ${{ secrets.DISPATCH_TOKEN }}
+        repo: batch-inference-processing-containers
+        owner: DTS-GDA-BI-Platform
+        run_id: ${{ steps.dispatch.outputs.run_id }}
+        run_timeout_seconds: 1200
+        poll_interval_ms: 5000
