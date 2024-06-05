@@ -17,8 +17,8 @@ with initialize(config_path='./config/', version_base=None):
 
 
 snowflake_interface = SnowflakeInterface(
-    stage_name_suffix=cfg['snowflake_staging']['stage_name_suffix'],
-    s3_path_suffix=cfg['snowflake_staging']['s3_path_suffix']
+    model='dummy_model',
+    environment=os.environ.get('DATALAB_DEPLOYMENT_ENVIRONMENT', 'LOCAL')
 )
 
 

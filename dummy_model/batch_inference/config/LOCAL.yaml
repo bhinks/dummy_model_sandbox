@@ -9,7 +9,3 @@ paths:
     artifacts_path:             '/root/github/dummy-model/dummy_model/batch_inference/artifacts/'
     # paths in batch_inference folder
     sql_files_path:             '/root/github/dummy-model/dummy_model/batch_inference/sql_files/'
-
-snowflake_staging:
-    stage_name_suffix: dummy_model__dev
-    s3_path_suffix: dummy-model/dev

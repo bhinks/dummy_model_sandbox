@@ -1,0 +1,4 @@
+sklearn_class: linear_model.Ridge
+alpha: 0.1
+tol: 0.001
+solver: 'saga'

@@ -1,0 +1,5 @@
+defaults:
+  - environment:        local
+  - mlflow_setup:       default
+  - sampling_strategy:  default
+  - vars:               default

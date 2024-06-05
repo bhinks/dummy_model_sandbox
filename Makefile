@@ -10,3 +10,14 @@ setup_dev_env:
 	rm -f poetry.lock
 	poetry install --all-extras
 	poetry run python -m ipykernel install --user --name=dummy-model
+
+test_training_locally:
+	python dummy_model/training/typer_functions_training.py trigger_experiment \
+															generate_datasets \
+															log_training_dataset \
+															preprocess_fit \
+															log_preprocessing_artifacts \
+															preprocess_transform \
+															train_model \
+															log_model_artifacts \
+															evaluate_model
