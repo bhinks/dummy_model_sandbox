@@ -1,5 +1,5 @@
 defaults:
-  - environment:        dev
-  - mlflow_setup:       default
-  - sampling_strategy:  default
-  - vars:               default
+  environment:        dev
+  mlflow_setup:       default
+  sampling_strategy:  default
+  vars:               default
