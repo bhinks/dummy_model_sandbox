@@ -13,7 +13,7 @@ hydra-core = "^1.3.2"
 pandas = "~2.1.4"
 sagemaker = "2.191.0"
 dictdiffer = "0.9.0"
-ds-snowflake-utils = "1.7.0"
+ds-snowflake-utils = "1.8.0"
 scikit-learn = "1.5.0"
 
 # dev dependencies
