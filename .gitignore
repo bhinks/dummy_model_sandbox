@@ -167,3 +167,11 @@ cython_debug/
 *training/data/
 *training/artifacts/
 notebooks/
+mlruns/
+mlartifacts/
+mlruns.db
+poetry.lock
+experiment_config.yaml
+*artifacts/
+*data/
+*mlflow/
