@@ -4,9 +4,9 @@ data_paths:
 
 artifact_paths:
     base_path:                   '/opt/ml/processing/dummy-model/artifacts/'
-    training_dataset_path:       '/opt/ml/processing/dummy-model/artifacts/training_dataset/'
-    scaler_path:                 '/opt/ml/processing/dummy-model/artifacts/preprocessing/'
-    model_path:                  '/opt/ml/processing/dummy-model/artifacts/models/'
+    training_dataset_path:       '/opt/ml/processing/dummy-model/artifacts/training_dataset'
+    scaler_path:                 '/opt/ml/processing/dummy-model/artifacts/preprocessing'
+    model_path:                  '/opt/ml/processing/dummy-model/artifacts/models'
 
 mlflow:
   run_id_txt_path:               '/opt/ml/processing/dummy-model/mlflow/mlflow_run_id.txt'

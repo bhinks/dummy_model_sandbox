@@ -9,7 +9,7 @@ import pandas as pd
 from omegaconf import OmegaConf
 from hydra import compose, initialize
 
-import sklearn
+import sklearn.linear_model as skl_lm
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
@@ -120,7 +120,7 @@ def preprocess_fit() -> None:
     standard_scaler.fit(train_data_df[numerical_columns_to_scale])
 
     # Save Scaler into Cache
-    joblib.dump(standard_scaler, cfg.environment.artifacts_paths.scaler_path + 'standard_scaler.pkl')
+    joblib.dump(standard_scaler, cfg.environment.artifact_paths.scaler_path + 'standard_scaler.pkl')
 
 
 @app.command("log_preprocessing_artifacts")
@@ -128,7 +128,7 @@ def preprocess_fit() -> None:
 def log_preprocessing_artifacts() -> None:
     # Log Pre-Processing Artifacts to MLFlow
     mlflow.log_artifact(
-        local_path=cfg.environment.artifacts_paths.scaler_path + 'standard_scaler.pkl',
+        local_path=cfg.environment.artifact_paths.scaler_path + 'standard_scaler.pkl',
         artifact_path=cfg.environment.artifact_paths.scaler_path.split(cfg.environment.artifact_paths.base_path)[-1]
     )
 
@@ -141,19 +141,19 @@ def preprocess_transform() -> None:
 
     # Preprocess Data
     numerical_columns_to_scale = [col.name for col in cfg.vars.num_vars if col.to_scale]
-    categorical_columns_to_encode = [col.name for col in cfg.vars.cat_vars if col.to_encode]
-    standard_scaler = joblib.load(cfg.environment.artifacts_paths.scaler_path + 'standard_scaler.pkl')
+    categorical_columns_to_one_hot_encode = [col.name for col in cfg.vars.cat_vars if col.to_one_hot_encode]
+    standard_scaler = joblib.load(cfg.environment.artifact_paths.scaler_path + 'standard_scaler.pkl')
     
     train_data_df = preprocess_data(
         train_data_df,
         numerical_columns=numerical_columns_to_scale,
-        categorical_columns=categorical_columns_to_encode,
+        categorical_columns=categorical_columns_to_one_hot_encode,
         scaler=standard_scaler
     )
     test_data_df = preprocess_data(
         test_data_df,
         numerical_columns=numerical_columns_to_scale,
-        categorical_columns=categorical_columns_to_encode,
+        categorical_columns=categorical_columns_to_one_hot_encode,
         scaler=standard_scaler
     )
 
@@ -168,9 +168,9 @@ def train_model() -> None:
     train_data_df = pd.read_parquet(cfg.environment.data_paths.preprocessed_data_path + 'preprocessed_train_data.parquet')
 
     # Train the Model
-    params = dict(cfg.model)
+    params = dict(cfg.model.params)
 
-    model = getattr(sklearn, cfg.model.sklearn_class(**params))
+    model = getattr(skl_lm, cfg.model.sklearn_class)(**params)
     
     X_train = train_data_df.drop(cfg.vars.target_var.name, axis=1)
     y_train = train_data_df[cfg.vars.target_var.name]
@@ -178,7 +178,7 @@ def train_model() -> None:
     model.fit(X_train, y_train)
 
     # Save Model into Cache
-    joblib.dump(model, cfg.environment.artifacts_paths.model_path + 'ridge_regressor.pkl')
+    joblib.dump(model, cfg.environment.artifact_paths.model_path + 'ridge_regressor.pkl')
 
     # Register Model in MLFlow (required purely to enable promotion to production)
     from datetime import datetime
@@ -197,7 +197,7 @@ def train_model() -> None:
 def log_model_artifacts() -> None:
     # Log Model Artifacts to MLFlow
     mlflow.log_artifact(
-        local_path=cfg.environment.artifacts_paths.model_path + 'ridge_regressor.pkl',
+        local_path=cfg.environment.artifact_paths.model_path + 'ridge_regressor.pkl',
         artifact_path=cfg.environment.artifact_paths.model_path.split(cfg.environment.artifact_paths.base_path)[-1]
     )
 
@@ -208,7 +208,7 @@ def evaluate_model() -> None:
     test_data_df = pd.read_parquet(cfg.environment.data_paths.preprocessed_data_path + 'preprocessed_test_data.parquet')
 
     # Run Model on Test Data
-    model = joblib.load(cfg.environment.artifacts_paths.model_path + 'ridge_regressor.pkl')
+    model = joblib.load(cfg.environment.artifact_paths.model_path + 'ridge_regressor.pkl')
 
     X_test = test_data_df.drop(cfg.vars.target_var.name, axis=1)
     y_test = test_data_df[cfg.vars.target_var.name]

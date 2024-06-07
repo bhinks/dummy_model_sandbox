@@ -1,4 +1,5 @@
-sklearn_class: linear_model.Ridge
-alpha: 0.1
-tol: 0.001
-solver: 'saga'
+sklearn_class: Ridge
+params:
+  alpha: 0.1
+  tol: 0.001
+  solver: 'saga'
