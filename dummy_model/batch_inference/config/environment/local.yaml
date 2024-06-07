@@ -1,10 +1,9 @@
 data_paths:
-    raw_data_path:              'cfdummy_model/batch_inference/data/raw_data/'
-    preprocessed_data_path:     'cfdummy_model/batch_inference/data/preprocessed_data/'
-    inferenced_data_path:       'cfdummy_model/batch_inference/data/inferenced_data/'
-    postprocessed_data_path:    'cfdummy_model/batch_inference/data/postprocessed_data/'
-    model_quality_data_path:    'cfdummy_model/batch_inference/data/model_quality_data/'
-artifacts_paths:
-    base_path:                   'cfdummy_model/batch_inference/artifacts/'
-    scaler_path:                 'cfdummy_model/batch_inference/artifacts/preprocessing/'
-    model_path:                  'cfdummy_model/batch_inference/artifacts/models/'
+    raw_data_path:              'dummy_model/batch_inference/data/raw_data/'
+    preprocessed_data_path:     'dummy_model/batch_inference/data/preprocessed_data/'
+    inferenced_data_path:       'dummy_model/batch_inference/data/inferenced_data/'
+    postprocessed_data_path:    'dummy_model/batch_inference/data/postprocessed_data/'
+artifact_paths:
+    base_path:                  'dummy_model/batch_inference/artifacts/'
+    scaler_path:                'dummy_model/batch_inference/artifacts/preprocessing/'
+    model_path:                 'dummy_model/batch_inference/artifacts/models/'

@@ -31,14 +31,14 @@ app = typer.Typer(chain=True)
 @app.command('test_command')
 def test_command() -> None:
     #################################################
-    print(f'Testing config read: {cfg["paths"]["raw_data_path"]}')
+    print(f'Testing config read: {cfg.environment.data_paths.raw_data_path}')
     #################################################
     
     #################################################
     print('Testing loading of artifacts:')
     #################################################
     import pickle
-    for file in Path(cfg["paths"]["artifacts_path"]).rglob('*[pb][ki][ln]'):
+    for file in Path(cfg.environment.artifact_paths.base_path).rglob('*[pb][ki][ln]'):
         with open(file, 'rb') as f:
             print(f'Loading {file}...')
             dummy_model_object = pickle.load(f)
@@ -77,7 +77,7 @@ def test_command() -> None:
     for path_config_key in cfg.environment.data_paths:
         if not os.path.exists(cfg.environment.data_paths[path_config_key]):
             raise ValueError(
-                f'The {path_config_key} {cfg["paths"][path_config_key]} does not exist. \
+                f'The {path_config_key} {cfg.environment.data_paths[path_config_key]} does not exist. \
                 This is NOT oki doki.'
             )
 
@@ -111,7 +111,7 @@ def preprocess_data() -> None:
 
     numerical_columns_to_scale = [col.name for col in cfg.vars.num_vars if col.to_scale]
     categorical_columns_to_encode = [col.name for col in cfg.vars.cat_vars if col.to_encode]
-    standard_scaler = joblib.load(cfg.environment.artifacts_paths.scaler_path + 'standard_scaler.pkl')
+    standard_scaler = joblib.load(cfg.environment.artifact_paths.scaler_path + 'standard_scaler.pkl')
     
     preprocessed_data_df = preprocess_data(
         raw_data_df,
@@ -134,7 +134,7 @@ def run_inference():
 
     preprocessed_data_df = pd.read_parquet(cfg.environment.data_paths.preprocessed_data_path + 'preprocessed_data.parquet')
 
-    model = joblib.load(cfg.environment.artifacts_paths.model_path + 'ridge_regressor.pkl')
+    model = joblib.load(cfg.environment.artifact_paths.model_path + 'ridge_regressor.pkl')
 
     prediction = model.predict(preprocessed_data_df.drop('ID', axis=1))
     inferenced_data_df = preprocessed_data_df.copy(deep=True)
