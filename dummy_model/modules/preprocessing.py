@@ -21,13 +21,13 @@ def _scale_numerical_features(df: pd.DataFrame, numerical_columns: List[str] = [
     return df
 
 
-def preprocess_data(
-    df: pd.DataFrame, 
+def encode_and_scale_data(
+    data: pd.DataFrame = None,
     categorical_columns: List[str] = [], 
     numerical_columns: List[str] = [],
     scaler: StandardScaler = None
 ) -> pd.DataFrame:
-    df = _one_hot_encode(df, categorical_columns)
-    df = _scale_numerical_features(df, numerical_columns)
+    data = _scale_numerical_features(data, numerical_columns)
+    data = _one_hot_encode(data, categorical_columns)
 
-    return df
+    return data

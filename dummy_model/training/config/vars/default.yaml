@@ -1,17 +1,17 @@
 num_vars:
-  - name: numerical_1
+  - name: NUMERICAL_1
     to_scale: True
-  - name: numerical_2
+  - name: NUMERICAL_2
     to_scale: False
-  - name: numerical_3
+  - name: NUMERICAL_3
     to_scale: True
 
 cat_vars:
-  - name: categorical_1
+  - name: CATEGORICAL_1
     to_one_hot_encode: True
-  - name: categorical_2
+  - name: CATEGORICAL_2
     to_one_hot_encode: True
 
 target_var:
-  name: target
+  name: TARGET
   to_scale: False
