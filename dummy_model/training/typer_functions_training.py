@@ -17,7 +17,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from ds_snowflake_utils import SnowflakeInterface
 
 from dummy_model.modules import DUMMY_IMPORT__MODULES
-from dummy_model.modules.preprocessing import preprocess_data
+from dummy_model.modules.preprocessing import encode_and_scale_data
 
 
 with initialize(config_path='./config/', version_base=None):
@@ -78,14 +78,14 @@ def generate_datasets() -> None:
     # Generate Data
     num_samples = 10_000  
     raw_data_df = pd.DataFrame({
-        'numerical_1':    np.random.rand(num_samples),
-        'numerical_2':    np.random.randn(num_samples),
-        'numerical_3':    np.random.randint(0, 100, num_samples),
+        'NUMERICAL_1':    np.random.rand(num_samples),
+        'NUMERICAL_2':    np.random.randn(num_samples),
+        'NUMERICAL_3':    np.random.randint(0, 100, num_samples),
         
-        'categorical_1':  np.random.choice(['x', 'y', 'z'], num_samples),
-        'categorical_2':  np.random.choice(['N', 'S', 'E', 'W'], num_samples),
+        'CATEGORICAL_1':  np.random.choice(['x', 'y', 'z'], num_samples),
+        'CATEGORICAL_2':  np.random.choice(['N', 'S', 'E', 'W'], num_samples),
         
-        'target':         np.random.randn(num_samples)
+        'TARGET':         np.random.randn(num_samples)
     })
 
     train_data_df, test_data_df = train_test_split(
@@ -105,7 +105,7 @@ def log_training_dataset() -> None:
     # Log Training Data to MLFlow
     mlflow.log_artifact(
         local_path=cfg.environment.data_paths.raw_data_path + 'train_data.parquet',
-        artifact_path=cfg.environment.artifact_paths.training_dataset_path.split(cfg.environment.artifact_paths.base_path)[-1]
+        artifact_path=cfg.environment.artifact_paths.training_dataset_path.split(cfg.environment.artifact_paths.base_path)[-1][:-1]
     )
 
 
@@ -129,7 +129,7 @@ def log_preprocessing_artifacts() -> None:
     # Log Pre-Processing Artifacts to MLFlow
     mlflow.log_artifact(
         local_path=cfg.environment.artifact_paths.scaler_path + 'standard_scaler.pkl',
-        artifact_path=cfg.environment.artifact_paths.scaler_path.split(cfg.environment.artifact_paths.base_path)[-1]
+        artifact_path=cfg.environment.artifact_paths.scaler_path.split(cfg.environment.artifact_paths.base_path)[-1][:-1]
     )
 
 
@@ -144,13 +144,13 @@ def preprocess_transform() -> None:
     categorical_columns_to_one_hot_encode = [col.name for col in cfg.vars.cat_vars if col.to_one_hot_encode]
     standard_scaler = joblib.load(cfg.environment.artifact_paths.scaler_path + 'standard_scaler.pkl')
     
-    train_data_df = preprocess_data(
+    train_data_df = encode_and_scale_data(
         train_data_df,
         numerical_columns=numerical_columns_to_scale,
         categorical_columns=categorical_columns_to_one_hot_encode,
         scaler=standard_scaler
     )
-    test_data_df = preprocess_data(
+    test_data_df = encode_and_scale_data(
         test_data_df,
         numerical_columns=numerical_columns_to_scale,
         categorical_columns=categorical_columns_to_one_hot_encode,
@@ -198,7 +198,7 @@ def log_model_artifacts() -> None:
     # Log Model Artifacts to MLFlow
     mlflow.log_artifact(
         local_path=cfg.environment.artifact_paths.model_path + 'ridge_regressor.pkl',
-        artifact_path=cfg.environment.artifact_paths.model_path.split(cfg.environment.artifact_paths.base_path)[-1]
+        artifact_path=cfg.environment.artifact_paths.model_path.split(cfg.environment.artifact_paths.base_path)[-1][:-1]
     )
 
 
