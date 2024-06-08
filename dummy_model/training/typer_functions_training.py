@@ -64,12 +64,19 @@ def trigger_experiment():
 
         with open(cfg.environment.mlflow.run_id_txt_path, 'w', encoding='utf-8') as f:
             f.write(mlflow.active_run().info.run_id)
+        with open(cfg.environment.mlflow.run_id_txt_path, 'r', encoding='utf-8') as f:
+            parent_run_id = f.read()
+            print(f'In with block: {parent_run_id}')
 
         OmegaConf.save(cfg, 'experiment_config.yaml')
         mlflow.log_artifact(
             local_path='experiment_config.yaml',
             artifact_path=''
         )
+
+    with open(cfg.environment.mlflow.run_id_txt_path, 'r', encoding='utf-8') as f:
+        parent_run_id = f.read()
+        print(f'Outside with block: {parent_run_id}')
 
 
 @app.command("generate_datasets")
