@@ -1,6 +1,5 @@
 from typing import List
 
-import joblib
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
@@ -27,7 +26,7 @@ def encode_and_scale_data(
     numerical_columns: List[str] = [],
     scaler: StandardScaler = None
 ) -> pd.DataFrame:
-    data = _scale_numerical_features(data, numerical_columns)
+    data = _scale_numerical_features(data, numerical_columns, scaler)
     data = _one_hot_encode(data, categorical_columns)
 
     return data
