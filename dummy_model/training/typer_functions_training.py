@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+from pprint import pprint
 from functools import wraps
 
 import typer
@@ -8,6 +10,7 @@ import numpy as np
 import pandas as pd
 from omegaconf import OmegaConf
 from hydra import compose, initialize
+from dictdiffer import diff as dictdiff
 
 import sklearn.linear_model as skl_lm
 from sklearn.preprocessing import StandardScaler
@@ -34,8 +37,46 @@ app = typer.Typer(chain=True)
 
 @app.command('test_command')
 def test_command() -> None:
-    print(f'Test cfg read: {cfg.environment.data_paths.raw_data_path}')
-    print(f'Test modules import: {DUMMY_IMPORT__MODULES}')
+@app.command('test_command')
+def test_command() -> None:
+    #################################################
+    print(f'Testing config read: {cfg.environment.data_paths.raw_data_path}')
+    #################################################
+
+    #################################################
+    print('Testing consistency of configs: ')
+    #################################################
+    def _check_config_consistency(config_A: str = None, config_B: str = None):
+        with initialize(config_path='./config/', version_base=None):
+            config_dict_A = OmegaConf.to_container(compose(config_name=config_A))
+        with initialize(config_path='./config/', version_base=None):
+            config_dict_B = OmegaConf.to_container(compose(config_name=config_B))
+        
+        diff = dictdiff(config_dict_A, config_dict_B)
+        print(f'Diff between {config_A} and {config_B} configs: ')
+        pprint(list([d for d in diff if d[0] in ['add', 'remove']]))
+
+        diff = dictdiff(config_dict_A, config_dict_B)
+        for d in diff:
+            operation = d[0]
+            if operation in ['add', 'remove']:
+                raise ValueError(f'{config_A} and {config_B} configs do not match.')
+
+        print(f'{config_A} and {config_B} configs are consistent')
+
+    _check_config_consistency('LOCAL',    'DEV')
+    _check_config_consistency('GITHUB',   'LOCAL')
+
+
+    #################################################
+    print('Testing validity of paths in config: ')
+    #################################################
+    for path_config_key in cfg.environment:
+        if not os.path.exists(cfg.environment[path_config_key]):
+            raise ValueError(
+                f'The {path_config_key} {cfg.environment[path_config_key]} does not exist. \
+                This is NOT oki doki.'
+            )
 
 
 mlflow.set_tracking_uri(cfg.environment.mlflow.tracking_server_url)
