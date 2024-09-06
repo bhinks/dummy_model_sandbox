@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 
-from ds_snowflake_utils import SnowflakeInterface
+# from ds_snowflake_utils import SnowflakeInterface
 
 from dummy_model.modules import DUMMY_IMPORT__MODULES
 from dummy_model.modules.preprocessing import encode_and_scale_data
@@ -27,16 +27,14 @@ with initialize(config_path='./config/', version_base=None):
     cfg = compose(config_name=f'{os.environ.get("DATALAB_DEPLOYMENT_ENVIRONMENT", "LOCAL")}')
 
 
-snowflake_interface = SnowflakeInterface(
-    model='dummy_model',
-    environment=os.environ.get('DATALAB_DEPLOYMENT_ENVIRONMENT', 'LOCAL')
-)
+# snowflake_interface = SnowflakeInterface(
+#     model='dummy_model',
+#     environment=os.environ.get('DATALAB_DEPLOYMENT_ENVIRONMENT', 'LOCAL')
+# )
 
 app = typer.Typer(chain=True)
 
 
-@app.command('test_command')
-def test_command() -> None:
 @app.command('test_command')
 def test_command() -> None:
     #################################################
@@ -71,10 +69,10 @@ def test_command() -> None:
     #################################################
     print('Testing validity of paths in config: ')
     #################################################
-    for path_config_key in cfg.environment:
-        if not os.path.exists(cfg.environment[path_config_key]):
+    for path_config_key in cfg.environment.data_paths:
+        if not os.path.exists(cfg.environment.data_paths[path_config_key]):
             raise ValueError(
-                f'The {path_config_key} {cfg.environment[path_config_key]} does not exist. \
+                f'The {path_config_key} {cfg.environment.data_paths[path_config_key]} does not exist. \
                 This is NOT oki doki.'
             )
 

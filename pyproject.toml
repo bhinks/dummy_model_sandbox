@@ -25,6 +25,8 @@ psutil = { version = "^6.0.0", optional = true }
 
 # training dependencies
 mlflow = { version = "2.13.1", optional = true }
+deprecated = { version = "^1.2.14", optional = true }
+opentelemetry-semantic-conventions = { version = "^0.48b0", optional = true }
 
 [tool.poetry.extras]
 dev = [
@@ -35,7 +37,9 @@ dev = [
     "psutil"
 ]
 training = [
-    "mlflow"
+    "mlflow",
+    "deprecated",
+    "opentelemetry-semantic-conventions"
 ]
 
 [build-system]
