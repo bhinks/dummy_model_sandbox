@@ -45,8 +45,3 @@ training = [
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[[tool.poetry.source]]
-name = "docusign-internal-pypi"
-url = "https://artifactory.docusignhq.com/artifactory/api/pypi/pypi-virtual/simple"
-priority = "primary"
